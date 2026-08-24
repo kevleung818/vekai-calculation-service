@@ -1,0 +1,16 @@
+{
+  "name": "vekai-calculation-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "check": "node --check index.js && node --check calculationService.js && node --check calculationStore.js && node --check airwallex.js && node --check thirdPartyPayment.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^4.22.2"
+  }
+}
