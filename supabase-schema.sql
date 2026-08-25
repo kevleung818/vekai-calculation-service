@@ -4,7 +4,7 @@ create table if not exists public.calculations (
   masked_input text not null,
   input_length integer not null check (input_length between 8 and 64),
   user_id text not null default 'anonymous',
-  locale text not null default 'en' check (locale in ('en', 'zh')),
+  locale text not null default 'en' check (locale in ('en', 'zh', 'zh-TW')),
   source text not null default 'web',
   created_at timestamptz not null default now()
 );
