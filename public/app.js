@@ -9,8 +9,8 @@ const localeSelect = document.querySelector('#locale-select');
 const apiStatuses = document.querySelectorAll('.status[id$="api-status"], #api-status');
 const translations = {
   en: { language: 'Language', source: 'Source', calculate: 'Calculate reading', reading: 'Reading...', base: 'BASE', result: 'RESULT', moving: 'Moving line', length: 'Input length', error: 'Enter between 8 and 64 digits.', number: 'Your number', help: 'Enter 8 to 64 digits', sequence: 'Number sequence', readingTitle: 'Your reading', waiting: 'Waiting for a number', empty: 'Your result will appear here', primary: 'PRIMARY SET', secondary: 'SECONDARY SET', heroEyebrow: 'DIGITAL NUMEROLOGY / 01', heroTitle: 'Find the pattern', heroEmphasis: 'inside the number.', heroLede: 'A clear reading from the digits you bring with you.', dashboard: 'OPERATOR DASHBOARD', health: 'API HEALTH', online: 'API ONLINE', offline: 'API OFFLINE', checking: 'API CHECKING', format: 'digits' },
-  zh: { language: '语言', source: '来源', calculate: '开始测算', reading: '测算中...', base: '本卦', result: '结果', moving: '动爻', length: '输入长度', error: '请输入 8 至 64 位数字。', number: '输入数字', help: '请输入 8 至 64 位数字', sequence: '数字序列', readingTitle: '测算结果', waiting: '等待输入数字', empty: '测算结果将在此显示', primary: '主卦', secondary: '变卦', heroEyebrow: '数字命理 / 01', heroTitle: '找出数字中的规律', heroEmphasis: '就在数字之中。', heroLede: '从你带来的数字中，读出清晰的讯息。', dashboard: '运营后台', health: '接口状态', online: '接口在线', offline: '接口离线', checking: '检查接口中', format: '位数字' },
-  'zh-TW': { language: '語言', source: '來源', calculate: '開始測算', reading: '測算中...', base: '本卦', result: '結果', moving: '動爻', length: '輸入長度', error: '請輸入 8 至 64 位數字。', number: '輸入數字', help: '請輸入 8 至 64 位數字', sequence: '數字序列', readingTitle: '測算結果', waiting: '等待輸入數字', empty: '測算結果將在此顯示', primary: '主卦', secondary: '變卦', heroEyebrow: '數位命理 / 01', heroTitle: '找出數字中的規律', heroEmphasis: '就在數字之中。', heroLede: '從你帶來的數字中，讀出清晰的訊息。', dashboard: '管理後台', health: '介面狀態', online: '介面在線', offline: '介面離線', checking: '檢查介面中', format: '位數字' }
+  zh: { language: '语言', source: '来源', calculate: '开始测算', reading: '测算中...', base: '本卦', result: '结果', moving: '动爻', length: '输入长度', error: '请输入 8 至 64 位数字。', number: '输入数字', help: '请输入 8 至 64 位数字', sequence: '数字序列', readingTitle: '测算结果', waiting: '等待输入数字', empty: '测算结果将在此显示', primary: '主卦', secondary: '变卦', heroEyebrow: '数字命理 / 01', heroTitle: '易经数理智鉴', heroEmphasis: '见微知著，', heroThird: '启迪睿智生活', heroLede: '', dashboard: '运营后台', health: '接口状态', online: '接口在线', offline: '接口离线', checking: '检查接口中', format: '位数字' },
+  'zh-TW': { language: '語言', source: '來源', calculate: '開始測算', reading: '測算中...', base: '本卦', result: '結果', moving: '動爻', length: '輸入長度', error: '請輸入 8 至 64 位數字。', number: '輸入數字', help: '請輸入 8 至 64 位數字', sequence: '數字序列', readingTitle: '測算結果', waiting: '等待輸入數字', empty: '測算結果將在此顯示', primary: '主卦', secondary: '變卦', heroEyebrow: '數位命理 / 01', heroTitle: '易經數理智鑑', heroEmphasis: '見微知著', heroThird: '啟迪睿智生活', heroLede: '', dashboard: '管理後台', health: '介面狀態', online: '介面在線', offline: '介面離線', checking: '檢查介面中', format: '位數字' }
 };
 
 function applyLocale() {
@@ -21,7 +21,13 @@ function applyLocale() {
   document.querySelector('#hero-eyebrow').textContent = text.heroEyebrow;
   document.querySelector('#hero-title').textContent = text.heroTitle;
   document.querySelector('#hero-emphasis').textContent = text.heroEmphasis;
+  document.querySelector('#hero-third').textContent = text.heroThird || '';
   document.querySelector('#hero-lede').textContent = text.heroLede;
+  document.querySelector('#hero-break').hidden = !text.heroEmphasis;
+  document.querySelector('#hero-emphasis').hidden = !text.heroEmphasis;
+  document.querySelector('#hero-break-two').hidden = !text.heroThird;
+  document.querySelector('#hero-third').hidden = !text.heroThird;
+  document.querySelector('#hero-lede').hidden = !text.heroLede;
   document.querySelector('#dashboard-link').innerHTML = `${text.dashboard} &#8599;`;
   document.querySelector('#health-link').innerHTML = `${text.health} &#8599;`;
   document.querySelector('#footer-label').textContent = locale === 'en' ? 'VEKAI / 2026' : locale === 'zh-TW' ? 'VEKAI / 2026' : 'VEKAI / 2026';

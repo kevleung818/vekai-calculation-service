@@ -13,6 +13,8 @@ body:before { content: ""; position: fixed; inset: 0; opacity: .28; pointer-even
 .intro { max-width: 720px; padding: 112px 0 62px; }
 .eyebrow, .card-label, .number-band span { color: var(--teal); font: 500 11px "DM Mono", monospace; letter-spacing: .16em; }
 h1 { margin: 18px 0 18px; font-size: clamp(48px, 7vw, 88px); line-height: .98; letter-spacing: -.055em; font-weight: 800; }
+h1 span, h1 em { display: block; }
+#hero-break, #hero-break-two { display: none; }
 h1 em { color: var(--coral); font-style: normal; }
 .lede { margin: 0; color: var(--muted); font-size: 17px; }
 .workspace { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 18px; align-items: stretch; }
