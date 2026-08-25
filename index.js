@@ -76,5 +76,26 @@ app.post('/api/calculations', async (req, res) => {
 app.get('/api/admin/dashboard', admin, async (req, res, next) => { try { res.json({ summary: await getSummary(), recent: (await listHistory(100)).records, payments: (await listPayments(100)).records }); } catch (error) { next(error); } });
 app.get('/api/admin/calculations/history', admin, async (req, res, next) => { try { res.json(await listHistory(Math.min(Number(req.query.limit) || 50, 200), Math.max(Number(req.query.offset) || 0, 0))); } catch (error) { next(error); } });
 app.use((error, req, res, next) => { console.error(error); res.status(500).json({ error: 'Internal server error.' }); });
-const port = process.env.PORT || 3015;
-app.listen(port, () => console.log(`Calculation service listening on port ${port}`));
+
+const requestedPort = Number(process.env.PORT || 3015);
+const host = process.env.HOST || '0.0.0.0';
+
+function startServer(port, retriesLeft = 10) {
+  const server = app.listen(port, host, () => {
+    console.log(`Calculation service listening on http://${host}:${port}`);
+  });
+
+  server.on('error', (error) => {
+    if (['EADDRINUSE', 'EACCES', 'EPERM'].includes(error.code) && retriesLeft > 0) {
+      const nextPort = port + 1;
+      console.warn(`Port ${port} unavailable (${error.code}), retrying on ${nextPort}.`);
+      startServer(nextPort, retriesLeft - 1);
+      return;
+    }
+
+    console.error(`Unable to start server on ${host}:${port}:`, error);
+    process.exit(1);
+  });
+}
+
+startServer(requestedPort);

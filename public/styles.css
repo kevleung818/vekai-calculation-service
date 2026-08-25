@@ -16,6 +16,7 @@ h1 { margin: 18px 0 18px; font-size: clamp(48px, 7vw, 88px); line-height: .98; l
 h1 span, h1 em { display: block; }
 #hero-break, #hero-break-two { display: none; }
 h1 em { color: var(--coral); font-style: normal; }
+#hero-third { display: block; font-size: .42em; line-height: 1.15; letter-spacing: -.02em; font-weight: 700; }
 .lede { margin: 0; color: var(--muted); font-size: 17px; }
 .workspace { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 18px; align-items: stretch; }
 .panel { border: 1px solid var(--line); background: rgba(255,253,248,.86); }
