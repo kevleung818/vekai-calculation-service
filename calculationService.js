@@ -1,3 +1,5 @@
+import { getHexagramReading } from './hexagramReadings.js';
+
 const MAP = {
   1: [1, 1, 1], 2: [0, 1, 1], 3: [1, 0, 1], 4: [0, 0, 1],
   5: [1, 1, 0], 6: [0, 1, 0], 7: [1, 0, 0], 8: [0, 0, 0]
@@ -95,8 +97,8 @@ function calculateSet(left, right) {
     split: { left, right },
     sums: { left: leftTotal, right: rightTotal, total },
     movingLine,
-    base: { top, bottom, number: baseNumber, meaning: meaning(baseNumber) },
-    result: { top: resultTop, bottom: resultBottom, number: resultNumber, meaning: meaning(resultNumber) }
+    base: { top, bottom, number: baseNumber, meaning: meaning(baseNumber), reading: getHexagramReading(baseNumber) },
+    result: { top: resultTop, bottom: resultBottom, number: resultNumber, meaning: meaning(resultNumber), reading: getHexagramReading(resultNumber) }
   };
 }
 
