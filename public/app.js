@@ -56,10 +56,12 @@ function showError(message) {
 function renderResult(payload) {
   const { result } = payload;
   const text = translations[payload.locale] || translations['zh-TW'];
+  const baseLabel = payload.locale === 'zh-TW' ? '最初的五年卦像' : text.base;
+  const secondaryBaseLabel = payload.locale === 'zh-TW' ? '往後的五年卦像' : text.base;
   const readings = [
-    [text.primary, text.base, result.primary.base],
+    [text.primary, baseLabel, result.primary.base],
     [text.primary, text.result, result.primary.result],
-    [text.secondary, text.base, result.secondary.base],
+    [text.secondary, secondaryBaseLabel, result.secondary.base],
     [text.secondary, text.result, result.secondary.result]
   ];
   emptyState.hidden = true;
