@@ -102,7 +102,74 @@ function calculateSet(left, right) {
   };
 }
 
-export function calculateNumerology(rawInput) {
+function buildAreaSet(set, companionSet) {
+  return {
+    love: { number: set.base.number, meaning: set.base.meaning },
+    finance: { number: set.result.number, meaning: set.result.meaning },
+    career: { number: companionSet.base.number, meaning: companionSet.base.meaning },
+    health: { number: companionSet.result.number, meaning: companionSet.result.meaning }
+  };
+}
+
+function buildAreaResults(primarySet, secondarySet, locale = 'en') {
+  const isChinese = locale === 'zh' || locale === 'zh-TW';
+  const areaNames = isChinese
+    ? [
+        { key: 'love', label: '愛情運勢' },
+        { key: 'finance', label: '財政狀況' },
+        { key: 'career', label: '職業 / 學業' },
+        { key: 'health', label: '健康狀態' }
+      ]
+    : [
+        { key: 'love', label: 'Love fortune' },
+        { key: 'finance', label: 'Financial status' },
+        { key: 'career', label: 'Career / study' },
+        { key: 'health', label: 'Health status' }
+      ];
+
+  const primaryAreas = buildAreaSet(primarySet, secondarySet);
+  const secondaryAreas = buildAreaSet(secondarySet, primarySet);
+
+  const fourResults = [
+    { category: 'primary', group: 'base', area: primaryAreas.love, ...areaNames[0] },
+    { category: 'primary', group: 'result', area: primaryAreas.finance, ...areaNames[1] },
+    { category: 'secondary', group: 'base', area: secondaryAreas.career, ...areaNames[2] },
+    { category: 'secondary', group: 'result', area: secondaryAreas.health, ...areaNames[3] }
+  ];
+
+  return {
+    areas: primaryAreas,
+    totals: fourResults,
+    labels: areaNames
+  };
+}
+
+function enrichSet(set, locale = 'en') {
+  const isChinese = locale === 'zh' || locale === 'zh-TW';
+  const baseMeaning = isChinese ? set.base.meaning[1] : set.base.meaning[0];
+  const resultMeaning = isChinese ? set.result.meaning[1] : set.result.meaning[0];
+  const changedLine = 6 - set.movingLine;
+  const summary = isChinese
+    ? `本卦${set.base.number}彰显${baseMeaning}，動爻${set.movingLine}與第${changedLine}爻轉化後，結果${set.result.number}體現${resultMeaning}。`
+    : `Base ${set.base.number} reflects ${baseMeaning}; the moving line ${set.movingLine} and shifted line ${changedLine} turn the reading into ${set.result.number}, highlighting ${resultMeaning}.`;
+  const insight = isChinese
+    ? `重點在動爻${set.movingLine}，將局勢從${set.base.number}引向${set.result.number}，重心落在${resultMeaning}。`
+    : `The key shift is moving line ${set.movingLine}, moving the reading from ${set.base.number} toward ${set.result.number} and emphasizing ${resultMeaning}.`;
+
+  return {
+    ...set,
+    summary,
+    insight,
+    movement: {
+      movingLine: set.movingLine,
+      changedLine,
+      direction: set.result.number > set.base.number ? 'expands' : set.result.number < set.base.number ? 'reframes' : 'stabilizes'
+    }
+  };
+}
+
+export function calculateNumerology(rawInput, options = {}) {
+  const { locale = 'en' } = options;
   const input = String(rawInput ?? '').replace(/\D/g, '');
   if (input.length < 8 || input.length > 64) {
     const error = new Error('Input must contain between 8 and 64 digits.');
@@ -113,6 +180,27 @@ export function calculateNumerology(rawInput) {
   const first = input.slice(0, firstGroupLength);
   const second = input.slice(firstGroupLength);
   const secondSplit = Math.floor(second.length / 2);
+  const primarySet = calculateSet(first, second);
+  const secondarySet = calculateSet(second.slice(0, secondSplit), second.slice(secondSplit));
+  const primary = enrichSet(primarySet, locale);
+  const secondary = enrichSet(secondarySet, locale);
+  const resultAreas = buildAreaResults(primarySet, secondarySet, locale);
+  primary.areas = resultAreas.areas;
+  secondary.areas = resultAreas.areas;
+  primary.totalResults = resultAreas.totals;
+  secondary.totalResults = resultAreas.totals;
+
+  const tableResults = [
+    { label: 'primary-base', number: primary.base.number, meaning: primary.base.meaning, category: 'primary', group: 'base' },
+    { label: 'primary-result', number: primary.result.number, meaning: primary.result.meaning, category: 'primary', group: 'result' },
+    { label: 'secondary-base', number: secondary.base.number, meaning: secondary.base.meaning, category: 'secondary', group: 'base' },
+    { label: 'secondary-result', number: secondary.result.number, meaning: secondary.result.meaning, category: 'secondary', group: 'result' }
+  ];
+  const numbers = tableResults.map((entry) => entry.number);
+  const topLevelSummary = locale === 'zh' || locale === 'zh-TW'
+    ? `輸入序列聚焦於主卦${primary.result.number}與副卦${secondary.result.number}，動爻與轉化揭示${primary.result.meaning[1]}。`
+    : `The sequence centers on the primary result ${primary.result.number} and secondary result ${secondary.result.number}, with the moving line and shifting pattern pointing toward ${primary.result.meaning[0]}.`;
+
   return {
     inputLength: input.length,
     format: input.length === 11 ? 'china-mobile-11' : 'legacy',
@@ -120,7 +208,14 @@ export function calculateNumerology(rawInput) {
       first: { digits: first, total: sumDigits(first) },
       second: { digits: second, total: sumDigits(second) }
     },
-    primary: calculateSet(first, second),
-    secondary: calculateSet(second.slice(0, secondSplit), second.slice(secondSplit))
+    numbers,
+    fourNumbers: [...numbers],
+    tableResults,
+    primary,
+    secondary,
+    summary: topLevelSummary,
+    insight: primary.insight,
+    areaResults: resultAreas.totals,
+    areaLabels: resultAreas.labels
   };
 }

@@ -47,7 +47,13 @@ function toTraditional(value) {
 }
 
 function traditionalizeSet(set) {
-  return { ...set, base: { ...set.base, meaning: [set.base.meaning[0], toTraditional(set.base.meaning[1])] }, result: { ...set.result, meaning: [set.result.meaning[0], toTraditional(set.result.meaning[1])] } };
+  return {
+    ...set,
+    base: { ...set.base, meaning: [set.base.meaning[0], toTraditional(set.base.meaning[1])] },
+    result: { ...set.result, meaning: [set.result.meaning[0], toTraditional(set.result.meaning[1])] },
+    summary: set.summary ? toTraditional(set.summary) : set.summary,
+    insight: set.insight ? toTraditional(set.insight) : set.insight
+  };
 }
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
@@ -64,12 +70,12 @@ app.post('/api/payments/checkout-session', async (req, res) => {
 app.post('/api/calculations', async (req, res) => {
   try {
     const { input, locale = 'zh-TW', source = 'web' } = req.body || {};
-    const result = calculateNumerology(input);
+    const result = calculateNumerology(input, { locale });
     const record = await recordCalculation({ input, locale, source });
     const isTraditional = locale === 'zh-TW';
     const isChinese = locale === 'zh' || isTraditional;
     const labels = isTraditional ? { primary: '主卦', secondary: '變卦', base: '本卦', result: '結果', movingLine: '動爻' } : isChinese ? { primary: '主卦', secondary: '变卦', base: '本卦', result: '结果', movingLine: '动爻' } : { primary: 'Primary Set', secondary: 'Secondary Set', base: 'Base', result: 'Result', movingLine: 'Moving line' };
-    const localizedResult = isTraditional ? { ...result, primary: traditionalizeSet(result.primary), secondary: traditionalizeSet(result.secondary) } : result;
+    const localizedResult = isTraditional ? { ...result, primary: traditionalizeSet(result.primary), secondary: traditionalizeSet(result.secondary), summary: toTraditional(result.summary), insight: toTraditional(result.insight) } : result;
     res.json({ calculationId: record.id, locale: record.locale, labels, result: localizedResult });
   } catch (error) { res.status(error.status || 500).json({ error: error.message || 'Calculation failed.' }); }
 });
