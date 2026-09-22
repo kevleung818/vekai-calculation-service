@@ -176,7 +176,7 @@ export function calculateNumerology(rawInput, options = {}) {
     error.status = 400;
     throw error;
   }
-  const firstGroupLength = input.length === 11 ? 6 : Math.floor(input.length / 2);
+  const firstGroupLength = Math.floor(input.length / 2);
   const first = input.slice(0, firstGroupLength);
   const second = input.slice(firstGroupLength);
   const secondSplit = Math.floor(second.length / 2);
