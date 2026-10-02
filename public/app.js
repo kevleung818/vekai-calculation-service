@@ -30,7 +30,7 @@ function applyLocale() {
   document.querySelector('#hero-lede').hidden = !text.heroLede;
   document.querySelector('#dashboard-link').innerHTML = `${text.dashboard} &#8599;`;
   document.querySelector('#health-link').innerHTML = `${text.health} &#8599;`;
-  document.querySelector('#footer-label').textContent = locale === 'en' ? 'VEKAI / 2026' : locale === 'zh-TW' ? 'VEKAI / 2026' : 'VEKAI / 2026';
+  document.querySelector('#footer-label').textContent = 'VEKAI / R1';
   document.querySelector('#source-select').previousElementSibling.textContent = text.source;
   document.querySelector('#number-title').textContent = text.number;
   document.querySelector('#number-help').textContent = text.help;
